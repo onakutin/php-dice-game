@@ -1,8 +1,9 @@
 <?php
-
+require_once 'Roll.php';
 class Dice
 {
     public ?int $sides = null;
+
 
     public function __construct()
     {
@@ -10,13 +11,18 @@ class Dice
 
     public function roll(): int
     {
-        return rand(1, $this->sides);
+        $newValue = rand(1, $this->sides);
+        $roll = new Roll;
+        $roll->value = $newValue;
+        $roll->number_of_sides = $this->sides;
+        $roll->insert();
+
+        return $newValue;
     }
 
-    public function __toString()
+    public function getDiceCollor()
     {
-        return "<div style='height: 30px; width: 30px; display: inline-block; text-align: center; border: 1px solid black; font-size: 24px; line-height: 30px;'>
-    {$this->roll()}
-    </div>";
+        $diceCollors = ['#0000ff', '#a52a2a', '#ffffff', '#f0f8ff', '#e43629', '#e4d829', '#2fe429', '#295be4', '#6e6c6d', '#6eb3c4'];
+        return $diceCollors[rand(0, count($diceCollors) - 1)];
     }
 }

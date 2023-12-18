@@ -32,8 +32,14 @@ if ($_POST) {
 $allDice = [];
 
 // if post includes more than only dice, e.i. also sides of dice have been selected
+// create the defined dice (could be done with one class only)
+if (count($_POST) > 1) {
 
-require_once './phpComponents/createDice.php';
+    for ($i = 0; $i < $numberOfDice; $i++) {
+        $allDiceNames[] = 'Dice' . $allDiceSides[$i];
+        $allDice[] = new $allDiceNames[$i];
+    }
+}
 
 ?>
 
@@ -43,10 +49,12 @@ require_once './phpComponents/createDice.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dice throwing</title>
+    <title>Throw Dice</title>
+    <link rel="stylesheet" href="./style/style.css">
 </head>
 
 <body>
+    <h1>GOOD LUCK!</h1>
     <!-- display errors if any -->
     <?php if ($errors) : ?>
         <span>
@@ -65,9 +73,11 @@ require_once './phpComponents/createDice.php';
         <?php include './htmlComponents/roll.php' ?>
     <?php endif; ?>
     <!-- dice are rolled only after 'ROLL' is pressed -->
-    <span>
+    <span class="dice-roll">
         <?php foreach ($allDice as $dice) : ?>
-            <?= $dice ?>
+            <button class="dice" style="background-color: <?= $dice->getDiceCollor() ?>">
+                <?= $dice->roll() ?>
+            </button>
         <?php endforeach ?>
     </span>
 </body>
