@@ -1,51 +1,30 @@
 <?php
-require_once 'Dice4.php';
-require_once 'Dice6.php';
-require_once 'Dice8.php';
-require_once 'Dice9.php';
-require_once 'Dice10.php';
-require_once 'Dice20.php';
+require_once './lib/bootstrap.php';
 
 session_start();
 
-
 $errors = [];
-$request_data = [];
-
-if ($_POST) {
-    $_SESSION['request_data'] = $_POST;
-}
-
 $errors = $_SESSION['errors'] ?? [];
-// $request_data = $_SESSION['request_data'] ?? [];
-$requestedNumberOfDice = $_SESSION['request_data']['dice'] ?? 0;
+$request_data = $_SESSION['request_data'] ?? [];
+$allDiceSides = []; // individual dice's number of sides
 
-// var_dump($_SESSION);
-
+//number of dice after the first (and every Update) post - not used for rolling
 $numberOfDice = $_POST['dice'] ?? 0;
 
-$allDiceSides = [];
-
-if ($numberOfDice > 0) {
-    for ($i = 1; $i <= $numberOfDice; $i++) {
-        $allDiceSides[] = $_SESSION['request_data']['sides' . $i] ?? '6';
-    }
-}
-
-var_dump($allDiceSides);
-
-// var_dump($requestedNumberOfSides1);
-
+// empty session and validate
 $_SESSION = [];
 
 $valid = true;
 
-if (!is_numeric($numberOfDice) && $numberOfDice != null) {
+if (!is_numeric($numberOfDice)) {
     $valid = false;
     $errors[] = "Number of dice must be a number";
 }
 
-
+if ($numberOfDice > 10) {
+    $valid = false;
+    $errors[] = "Max 10 dice possible";
+}
 
 if (!$valid) {
     $_SESSION['errors'] = $errors;
@@ -55,10 +34,39 @@ if (!$valid) {
 }
 
 
+// if the number of sides of each dice has been selected, put them into session ...
+if (isset($_POST['sides1'])) {
+    $_SESSION['request_data'] = $_POST;
+
+    //... and into variable to be used for rolling
+    for ($i = 1; $i <= $numberOfDice; $i++) {
+        $allDiceSides[] = $_SESSION['request_data']['sides' . $i];
+    }
+
+    // if the number of sides of each dice has not been selected, set default 6
+    // if number of dice is 0, the $allDiceSides will be []    
+} elseif (is_numeric($numberOfDice)) {
+    for ($i = 1; $i <= $numberOfDice; $i++) {
+        $allDiceSides[] = '6';
+    }
+}
+
+// VALUE TO USE TO FILL THE INPUT AFTER RETURNING
+// if number of dice input was validated as valid, i have post
+if ($_POST) {
+    $requestedNumberOfDice = $_POST['dice'];
+} else {
+
+    // ... otherwise I take the value coming from the previous session
+    // (at the render I have neither post nor session => 0)
+    $requestedNumberOfDice = $request_data['dice'] ?? 0;
+}
 
 $allDice = [];
 
-if (count($allDiceSides) > 0) {
+// if post includes more than only dice, e.i. also sides of dice have been selected
+// create the defined dice (could be done with one class only)
+if (count($_POST) > 1) {
 
     for ($i = 0; $i < $numberOfDice; $i++) {
         switch ($allDiceSides[$i]) {
@@ -97,6 +105,7 @@ if (count($allDiceSides) > 0) {
 </head>
 
 <body>
+    <!-- display errors if any -->
     <?php if ($errors) : ?>
         <span>
             <?= $errors[0] ?>
@@ -104,21 +113,22 @@ if (count($allDiceSides) > 0) {
     <?php endif; ?>
     <form action="" method="post">
         <label>Number of dice:
-            <input type="text" name="dice" placeholder="Enter a number" value=<?= $requestedNumberOfDice ?>>
+            <input type="text" name="dice" placeholder="Enter a number" value=<?= $requestedNumberOfDice ?? 0 ?>>
         </label>
         <button>Update</button>
     </form>
 
-
+    <!-- this is displayed only after 'Update' is pressed -->
     <?php if ($numberOfDice > 0) : ?>
         <form action="" method="post">
 
             <label>Selected number of dice
                 <input type="text" name="dice" value=<?= $numberOfDice ?> readonly>
-            </label>
+            </label><br>
             <?php for ($i = 0; $i < $numberOfDice; $i++) : ?>
                 <label>Number of sides
                     <select name="sides<?= $i + 1 ?>">
+                        <!-- default option remains the one previously selected or 6 -->
                         <option value="4" <?php if ($allDiceSides[$i] === '4') : ?> <?= 'selected' ?> <?php endif; ?>>4</option>
                         <option value="6" <?php if ($allDiceSides[$i] === '6') : ?> <?= 'selected' ?> <?php endif; ?>>6</option>
                         <option value="8" <?php if ($allDiceSides[$i] === '8') : ?> <?= 'selected' ?> <?php endif; ?>>8</option>
@@ -131,6 +141,7 @@ if (count($allDiceSides) > 0) {
             <button>ROLL</button>
         </form>
     <?php endif; ?>
+    <!-- dice are rolled only after 'ROLL' is pressed -->
     <span>
         <?php foreach ($allDice as $dice) : ?>
             <?= $dice ?>
