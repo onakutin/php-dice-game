@@ -36,8 +36,8 @@ $allDice = [];
 if (count($_POST) > 1) {
 
     for ($i = 0; $i < $numberOfDice; $i++) {
-        $allDiceNames[] = 'Dice' . $allDiceSides[$i];
-        $allDice[] = new $allDiceNames[$i];
+        $diceName = 'Dice' . $allDiceSides[$i];
+        $allDice[] = new $diceName;
     }
 }
 
@@ -54,32 +54,35 @@ if (count($_POST) > 1) {
 </head>
 
 <body>
-    <h1>GOOD LUCK!</h1>
-    <!-- display errors if any -->
-    <?php if ($errors) : ?>
-        <span>
-            <?= $errors[0] ?>
-        </span>
-    <?php endif; ?>
-    <form action="" method="post">
-        <label>Number of dice:
-            <input type="text" name="dice" placeholder="Enter a number" value=<?= $requestedNumberOfDice ?? 0 ?>>
-        </label>
-        <button>Update</button>
-    </form>
+    <main>
+        <h1>GOOD LUCK!</h1>
+        <!-- display errors if any -->
+        <?php if ($errors) : ?>
+            <span>
+                <?= $errors[0] ?>
+            </span>
+        <?php endif; ?>
+        <form action="" method="post">
+            <label>Number of dice:
+                <input type="text" name="dice" placeholder="Enter a number" value=<?= $requestedNumberOfDice ?? 0 ?>>
+            </label>
+            <button>Update</button>
+        </form>
 
-    <!-- this is displayed only after 'Update' is pressed -->
-    <?php if ($numberOfDice > 0) : ?>
-        <?php include './htmlComponents/roll.php' ?>
-    <?php endif; ?>
-    <!-- dice are rolled only after 'ROLL' is pressed -->
-    <span class="dice-roll">
-        <?php foreach ($allDice as $dice) : ?>
-            <button class="dice" style="background-color: <?= $dice->getDiceCollor() ?>">
-                <?= $dice->roll() ?>
-            </button>
-        <?php endforeach ?>
-    </span>
+        <!-- this is displayed only after 'Update' is pressed -->
+        <?php if ($numberOfDice > 0) : ?>
+            <?php include './htmlComponents/roll.php' ?>
+        <?php endif; ?>
+        <!-- dice are rolled only after 'ROLL' is pressed -->
+        <span class="dice-roll">
+            <?php foreach ($allDice as $dice) : ?>
+                <button class="dice" style="background-color: <?= $dice->getDiceCollor() ?>">
+                    <?= $dice->roll() ?>
+                </button>
+            <?php endforeach ?>
+        </span>
+    </main>
+    <?php include './htmlComponents/statistics.php' ?>
 </body>
 
 </html>

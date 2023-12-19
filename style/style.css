@@ -19,7 +19,12 @@ body {
     height: 100vh;
     margin: 0 auto;
     padding: 2rem;
+    position: relative;
     width: 80vw;
+}
+
+main {
+    height: 80vh;
 }
 
 h1 {
@@ -28,6 +33,10 @@ h1 {
 
 h2 {
     margin-top: 5rem;
+}
+
+h4 {
+    text-align: center;
 }
 
 form {
@@ -85,4 +94,24 @@ button {
         sans-serif;
     letter-spacing: 0.2rem;
     padding: 0 1rem;
+}
+
+footer {
+    border-top: solid 1px black;
+    bottom: 0;
+    color: rgb(77, 71, 71);
+    font-family: Haettenschweiler,
+        'Arial Narrow Bold',
+        sans-serif;
+    height: 20vh;
+    left: 0;
+    padding: 2rem;
+    position: absolute;
+    width: 100%;
+}
+
+.stats__by-dice {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }

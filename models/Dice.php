@@ -4,12 +4,7 @@ class Dice
 {
     public ?int $sides = null;
 
-
-    public function __construct()
-    {
-    }
-
-    public function roll(): int
+    public function roll()
     {
         $newValue = rand(1, $this->sides);
         $roll = new Roll;

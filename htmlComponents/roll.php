@@ -1,6 +1,6 @@
 <?php
 
-$dicePosValues = ['4', '6', '8', '9', '10', '20'];
+$sidesPosValues = ['4', '6', '8', '9', '10', '20'];
 
 ?>
 
@@ -19,7 +19,7 @@ $dicePosValues = ['4', '6', '8', '9', '10', '20'];
             <select class="side-select-menu" name="sides<?= $i + 1 ?>">
                 <!-- default option remains the one previously selected or 6 -->
 
-                <?php foreach ($dicePosValues as $value) : ?>
+                <?php foreach ($sidesPosValues as $value) : ?>
                     <option value="<?= $value ?>" <?php if ($allDiceSides[$i] === $value) : ?> <?= 'selected' ?> <?php endif; ?>><?= $value ?></option>
                 <?php endforeach; ?>
             </select>
